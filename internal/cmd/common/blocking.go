@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-logr/logr"
 	multierror "github.com/hashicorp/go-multierror"
-	"github.com/object88/shipwright/pkg/http/probes"
+	"github.com/object88/shipwright/internal/http/probes"
 )
 
 // Blocker is a long-running func that can be canceled with the provided

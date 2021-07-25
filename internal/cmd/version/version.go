@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/object88/shipyard/internal/cmd/cliflags"
-	"github.com/object88/shipyard/internal/cmd/common"
-	"github.com/object88/shipyard/internal/version"
+	"github.com/object88/shipwright/internal/cmd/cliflags"
+	"github.com/object88/shipwright/internal/cmd/common"
+	"github.com/object88/shipwright/internal/version"
 	"github.com/spf13/cobra"
 )
 

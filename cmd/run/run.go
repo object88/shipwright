@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/object88/shipwright/internal/cmd/common"
-	"github.com/object88/shipwright/pkg/http"
-	httpcliflags "github.com/object88/shipwright/pkg/http/cliflags"
-	"github.com/object88/shipwright/pkg/http/probes"
-	"github.com/object88/shipwright/pkg/http/router"
-	v1 "github.com/object88/shipwright/pkg/http/router/v1"
-	k8scliflags "github.com/object88/shipwright/pkg/k8s/cliflags"
+	"github.com/object88/shipwright/internal/http"
+	httpcliflags "github.com/object88/shipwright/internal/http/cliflags"
+	"github.com/object88/shipwright/internal/http/probes"
+	"github.com/object88/shipwright/internal/http/router"
+	k8scliflags "github.com/object88/shipwright/internal/k8s/cliflags"
 	"github.com/spf13/cobra"
 )
 
@@ -57,11 +56,11 @@ func (c *command) preexecute(cmd *cobra.Command, args []string) error {
 }
 
 func (c *command) execute(cmd *cobra.Command, args []string) error {
-	return common.Multiblock(c.Log, c.probe, c.startHTTPServer, c.startControllerManager, c.startInformerManager)
+	return common.Multiblock(c.Log, c.probe, c.startHTTPServer)
 }
 
 func (c *command) startHTTPServer(ctx context.Context, r probes.Reporter) error {
-	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe, v1.Defaults(c.Log)))
+	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe))
 	if err != nil {
 		return err
 	}
