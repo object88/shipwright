@@ -35,7 +35,7 @@ func Defaults(p *probes.Probe, subroutes ...[]*route.Route) []*route.Route {
 }
 
 func DefaultHandleRoot(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "tugboat")
+	io.WriteString(w, "shipwright")
 }
 
 func DefaultHandleLiveness(p *probes.Probe) http.HandlerFunc {
