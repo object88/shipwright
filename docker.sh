@@ -42,7 +42,14 @@ done
 
 # Let this run the `go mod verify` task, so that we don't have to in every
 # docker build.
-time docker build --build-arg DO_TEST=$DO_TEST --build-arg DO_VET=$DO_VET --build-arg DO_VERIFY=$DO_VERIFY --build-arg BUILD_AND_RELEASE=$BUILD_AND_RELEASE -f Dockerfile .
+time docker build \
+  --build-arg DO_TEST=$DO_TEST \
+  --build-arg DO_VET=$DO_VET \
+  --build-arg DO_VERIFY=$DO_VERIFY \
+  --build-arg BUILD_AND_RELEASE=$BUILD_AND_RELEASE \
+  -f Dockerfile \
+  --tag object88/shipwright:latest \
+  .
 
 docker tag "object88/shipwright:latest" "object88/shipwright:$TAG"
 
