@@ -9,6 +9,8 @@ import (
 	"github.com/object88/shipwright/internal/http/probes"
 	"github.com/object88/shipwright/internal/http/router"
 	k8scliflags "github.com/object88/shipwright/internal/k8s/cliflags"
+	webhookcliflags "github.com/object88/shipwright/internal/webhook/cliflags"
+	"github.com/object88/shipwright/internal/webhook/routes"
 	"github.com/spf13/cobra"
 )
 
@@ -16,8 +18,9 @@ type command struct {
 	cobra.Command
 	*common.CommonArgs
 
-	httpFlagMgr *httpcliflags.FlagManager
-	k8sFlagMgr  *k8scliflags.FlagManager
+	httpFlagMgr    *httpcliflags.FlagManager
+	k8sFlagMgr     *k8scliflags.FlagManager
+	webhookFlagMgr *webhookcliflags.FlagManager
 
 	probe *probes.Probe
 }
@@ -37,15 +40,17 @@ func CreateCommand(ca *common.CommonArgs) *cobra.Command {
 				return c.execute(cmd, args)
 			},
 		},
-		CommonArgs:  ca,
-		httpFlagMgr: httpcliflags.New(),
-		k8sFlagMgr:  k8scliflags.New(),
+		CommonArgs:     ca,
+		httpFlagMgr:    httpcliflags.New(),
+		k8sFlagMgr:     k8scliflags.New(),
+		webhookFlagMgr: webhookcliflags.New(),
 	}
 
 	flags := c.Flags()
 
 	c.httpFlagMgr.ConfigureHttpFlag(flags)
 	c.k8sFlagMgr.ConfigureKubernetesConfig(flags)
+	c.webhookFlagMgr.ConfigureSecret(flags)
 
 	return common.TraverseRunHooks(&c.Command)
 }
@@ -60,7 +65,7 @@ func (c *command) execute(cmd *cobra.Command, args []string) error {
 }
 
 func (c *command) startHTTPServer(ctx context.Context, r probes.Reporter) error {
-	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe))
+	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe, routes.Defaults(c.Log, c.webhookFlagMgr.Secret())))
 	if err != nil {
 		return err
 	}

@@ -126,9 +126,7 @@ func (p *Probe) GoString() string {
 func (p *Probe) set(index uint, value state) {
 	switch value {
 	case down:
-		fmt.Printf("before: state: %d\n", p.states)
 		p.states &^= (1 << index)
-		fmt.Printf("after:  state: %d\n", p.states)
 	case up:
 		p.states |= (1 << index)
 	}
