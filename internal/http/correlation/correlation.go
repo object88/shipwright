@@ -40,7 +40,7 @@ func (ch CorrelationHandler) ServeHTTP(w http.ResponseWriter, req *http.Request)
 		}
 		corr = c.String()
 	}
-	w.Header().Add("Correlation-ID", corr)
+	w.Header().Add(correlationIdHeaderKey, corr)
 	req = req.WithContext(context.WithValue(req.Context(), contextKey{}, corr))
 	ch.next.ServeHTTP(w, req)
 }
