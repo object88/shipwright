@@ -9,6 +9,7 @@ import (
 	"github.com/object88/shipwright/internal/http/probes"
 	"github.com/object88/shipwright/internal/http/router"
 	k8scliflags "github.com/object88/shipwright/internal/k8s/cliflags"
+	"github.com/object88/shipwright/internal/webhook"
 	webhookcliflags "github.com/object88/shipwright/internal/webhook/cliflags"
 	"github.com/object88/shipwright/internal/webhook/routes"
 	"github.com/spf13/cobra"
@@ -65,7 +66,8 @@ func (c *command) execute(cmd *cobra.Command, args []string) error {
 }
 
 func (c *command) startHTTPServer(ctx context.Context, r probes.Reporter) error {
-	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe, routes.Defaults(c.Log, c.webhookFlagMgr.Secret())))
+	wh := webhook.New()
+	rts, err := router.New(c.Log).Route(router.LoggingDefaultRoute, router.Defaults(c.probe, routes.Defaults(c.Log, wh, c.webhookFlagMgr.Secret())))
 	if err != nil {
 		return err
 	}
